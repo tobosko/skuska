@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aplikácia</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        input { padding: 8px; display: block; margin: 10px 0; width: 200px; }
+        button { padding: 8px 15px; cursor: pointer; margin: 5px 5px 5px 0; }
+        ul { margin-top: 20px; }
+        li { padding: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Moja Aplikácia</h1>
+    <p id="uzivatel">Prihlásený ako: <b id="email"></b></p>
+    <button onclick="odhlasit()">Odhlásiť sa</button>
+
+    <h2>Ulož si niečo</h2>
+    <input id="txt" placeholder="Napíš niečo">
+    <button onclick="uloz()">Ulož</button>
+
+    <h2>Tvoje údaje:</h2>
+    <ul id="zoznam"></ul>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVGGZN44AymLC3m0rSWvoYTQ1dL8hZd_A",
+            authDomain: "web-app-3b87c.firebaseapp.com",
+            projectId: "web-app-3b87c",
+            storageBucket: "web-app-3b87c.firebasestorage.app",
+            messagingSenderId: "9585236090",
+            appId: "1:9585236090:web:7e61314446b7d52b3683c3"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                document.getElementById("email").textContent = user.email;
+                nacitaj();
+            } else {
+                window.location.href = "index.html";
+            }
+        });
+
+        function odhlasit() {
+            auth.signOut();
+        }
+
+        async function uloz() {
+            const text = document.getElementById("txt").value;
+            if (text) {
+                await db.collection("data").add({
+                    text: text,
+                    uzivatel: auth.currentUser.email,
+                    cas: new Date()
+                });
+                document.getElementById("txt").value = "";
+                nacitaj();
+            }
+        }
+
+        async function nacitaj() {
+            const snapshot = await db.collection("data").getDocs();
+            document.getElementById("zoznam").innerHTML = "";
+            snapshot.forEach(doc => {
+                const li = document.createElement("li");
+                li.textContent = doc.data().text + " (" + doc.data().uzivatel + ")";
+                document.getElementById("zoznam").appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -61,6 +61,7 @@
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
             auth.createUserWithEmailAndPassword(email, password)
+                .then(() => window.location.href = "app.html")
                 .catch(err => alert("Chyba: " + err.message));
         }
 
@@ -68,6 +69,7 @@
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
             auth.signInWithEmailAndPassword(email, password)
+                .then(() => window.location.href = "app.html")
                 .catch(err => alert("Chyba: " + err.message));
         }
 
