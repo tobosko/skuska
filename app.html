@@ -14,7 +14,7 @@
         </button>
     </div>
     <div class="Container">
-        <div class="Meno"><b>Tobias Tomko</b></div>
+        <div class="Meno"><b>Prihlaseny cez: <b id="email"></b></b></div>
     </div>
 
 
@@ -50,6 +50,15 @@
                 window.location.href = "index.html";
 
             });
+
+        auth.onAuthStateChanged(user => {
+
+    if (user) {
+
+        document.getElementById("email")
+            .textContent = user.email;
+        }
+    });
     }
 
 </script>
