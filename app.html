@@ -17,6 +17,19 @@
         <div class="Meno"><b>Prihlaseny cez: <b id="email"></b></b></div>
     </div>
 
+    <div class="formular">
+
+        <input id="meno" placeholder="Meno">
+
+        <input id="vek" type="number" placeholder="Vek">
+
+        <input id="mesto" placeholder="Mesto">
+
+        <button onclick="odoslatFormular()">
+            Odoslať
+        </button>
+    </div>
+
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 
@@ -74,6 +87,40 @@
 
             });
     }
+
+    async function odoslatFormular() {
+
+        const meno =
+            document.getElementById("meno").value;
+
+        const vek =
+            document.getElementById("vek").value;
+
+        const mesto =
+            document.getElementById("mesto").value;
+
+        try {
+
+            await db.collection("formular").add({
+
+                meno: meno,
+
+                vek: vek,
+
+                mesto: mesto,
+
+                email: auth.currentUser.email,
+
+                cas: new Date()
+            });
+
+            alert("Údaje uložené");
+
+        } catch (err) {
+
+            alert(err.message);
+        }
+}
 
 </script>
 </body>
