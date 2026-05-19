@@ -1,0 +1,36 @@
+body{
+    background-color: bisque;
+}
+
+.Hlavicka{
+    display: grid;
+    background-color: burlywood;
+    text-align: center;
+    border: 2px black solid;
+    grid-template-columns: 90% 10%
+}
+
+
+.logout-btn{
+    background: burlywood;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.logout-btn {
+    background: burlywood;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+
+.Container{
+    display: grid;
+    background-color: burlywood;
+    border: black;
+
+    width: auto;
+    height: auto;
+}
