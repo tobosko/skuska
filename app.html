@@ -1,80 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Aplikácia</title>
-    <style>
-        body { font-family: Arial; padding: 20px; }
-        input { padding: 8px; display: block; margin: 10px 0; width: 200px; }
-        button { padding: 8px 15px; cursor: pointer; margin: 5px 5px 5px 0; }
-        ul { margin-top: 20px; }
-        li { padding: 5px; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styly.css">
 </head>
 <body>
-    <h1>Moja Aplikácia</h1>
-    <p id="uzivatel">Prihlásený ako: <b id="email"></b></p>
-    <button onclick="odhlasit()">Odhlásiť sa</button>
+    <div class="Hlavicka">
+        <h1>Vitajte na mojej stranke</h1>
+        <button class="logout-btn" onclick="odhlasit()">
+            <b>Odhlásiť sa</b>
+        </button>
+    </div>
+    <div class="Container">
+        <div class="Meno"><b>Tobias Tomko</b></div>
+    </div>
 
-    <h2>Ulož si niečo</h2>
-    <input id="txt" placeholder="Napíš niečo">
-    <button onclick="uloz()">Ulož</button>
-
-    <h2>Tvoje údaje:</h2>
-    <ul id="zoznam"></ul>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
+
+        // Firebase config
         const firebaseConfig = {
-            apiKey: "AIzaSyCVGGZN44AymLC3m0rSWvoYTQ1dL8hZd_A",
-            authDomain: "web-app-3b87c.firebaseapp.com",
-            projectId: "web-app-3b87c",
-            storageBucket: "web-app-3b87c.firebasestorage.app",
-            messagingSenderId: "9585236090",
-            appId: "1:9585236090:web:7e61314446b7d52b3683c3"
+
+            apiKey: "TVOJ_API_KEY",
+
+            authDomain: "TVOJ_PROJEKT.firebaseapp.com",
+
+            projectId: "TVOJ_PROJEKT",
+
+            storageBucket: "TVOJ_PROJEKT.appspot.com",
+
+            messagingSenderId: "XXXX",
+
+            appId: "XXXX"
         };
 
+        // Init Firebase
         firebase.initializeApp(firebaseConfig);
+
         const auth = firebase.auth();
-        const db = firebase.firestore();
 
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                document.getElementById("email").textContent = user.email;
-                nacitaj();
-            } else {
-                window.location.href = "index.html";
-            }
-        });
-
+        // Logout funkcia
         function odhlasit() {
-            auth.signOut();
-        }
 
-        async function uloz() {
-            const text = document.getElementById("txt").value;
-            if (text) {
-                await db.collection("data").add({
-                    text: text,
-                    uzivatel: auth.currentUser.email,
-                    cas: new Date()
+            auth.signOut()
+
+                .then(() => {
+
+                    window.location.href =
+                        "index.html";
+
                 });
-                document.getElementById("txt").value = "";
-                nacitaj();
-            }
         }
 
-        async function nacitaj() {
-            const snapshot = await db.collection("data").getDocs();
-            document.getElementById("zoznam").innerHTML = "";
-            snapshot.forEach(doc => {
-                const li = document.createElement("li");
-                li.textContent = doc.data().text + " (" + doc.data().uzivatel + ")";
-                document.getElementById("zoznam").appendChild(li);
-            });
-        }
     </script>
 </body>
 </html>
