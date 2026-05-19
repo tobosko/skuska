@@ -27,6 +27,7 @@ body{
 
 
 .Container{
+    gap: 8px;
     display: grid;
     background-color: burlywood;
     border: black;
