@@ -1,129 +1,181 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Moja Stránka</title>
+
     <link rel="stylesheet" href="styly.css">
 </head>
+
 <body>
+
+    <!-- HLAVIČKA -->
     <div class="Hlavicka">
-        <h1>Vitajte na mojej stranke</h1>
-        <button class="logout-btn" onclick="odhlasit()">
+
+        <h1>Vitajte na mojej stránke</h1>
+
+        <button class="logout-btn"
+                onclick="odhlasit()">
+
             <b>Odhlásiť sa</b>
+
         </button>
-    </div>
-    <div class="Container">
-        <div class="Meno"><b>Prihlaseny cez: <b id="email"></b></b></div>
+
     </div>
 
+    <!-- USER -->
+    <div class="Container">
+
+        <div class="Meno">
+
+            <b>
+                Prihlásený cez:
+                <span id="email"></span>
+            </b>
+
+        </div>
+
+    </div>
+
+    <!-- FORMULÁR -->
     <div class="formular">
 
-        <input id="meno" placeholder="Meno">
+        <h2>Formulár</h2>
 
-        <input id="vek" type="number" placeholder="Vek">
+        <input
+            id="meno"
+            placeholder="Meno"
+        >
 
-        <input id="mesto" placeholder="Mesto">
+        <input
+            id="vek"
+            type="number"
+            placeholder="Vek"
+        >
+
+        <input
+            id="mesto"
+            placeholder="Mesto"
+        >
 
         <button onclick="odoslatFormular()">
             Odoslať
         </button>
+
     </div>
 
-
+    <!-- FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    
+
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
-    // Firebase config
-    const firebaseConfig = {
 
-        apiKey: "AIzaSyCVGGZN44AymLC3m0rSWvoYTQ1dL8hZd_A",
+        // Firebase config
+        const firebaseConfig = {
 
-        authDomain: "web-app-3b87c.firebaseapp.com",
+            apiKey: "AIzaSyCVGGZN44AymLC3m0rSWvoYTQ1dL8hZd_A",
 
-        projectId: "web-app-3b87c",
+            authDomain: "web-app-3b87c.firebaseapp.com",
 
-        storageBucket: "web-app-3b87c.appspot.com",
+            projectId: "web-app-3b87c",
 
-        messagingSenderId: "9585236090",
+            storageBucket: "web-app-3b87c.appspot.com",
 
-        appId: "1:9585236090:web:7e61314446b7d52b3683c3",
+            messagingSenderId: "9585236090",
 
-        measurementId: "G-66T6L53E2Y"
-    };
+            appId: "1:9585236090:web:7e61314446b7d52b3683c3",
 
-    // Init Firebase
-    firebase.initializeApp(firebaseConfig);
+            measurementId: "G-66T6L53E2Y"
+        };
 
-    // Auth
-    const auth = firebase.auth();
+        // Init Firebase
+        firebase.initializeApp(firebaseConfig);
 
-    // Kontrola používateľa
-    auth.onAuthStateChanged(user => {
+        // Auth
+        const auth = firebase.auth();
 
-        if (user) {
+        // Firestore
+        const db = firebase.firestore();
 
-            // Zobrazenie emailu
-            document.getElementById("email")
-                .textContent = user.email;
+        // Kontrola loginu
+        auth.onAuthStateChanged(user => {
 
-        } else {
+            if (user) {
 
-            // Ak nie je login
-            window.location.href = "index.html";
-        }
-    });
+                // Zobrazenie emailu
+                document.getElementById("email")
+                    .textContent = user.email;
 
-    // Logout
-    function odhlasit() {
+            } else {
 
-        auth.signOut()
-
-            .then(() => {
-
+                // Ak nie je prihlásený
                 window.location.href = "index.html";
+            }
+        });
 
-            });
-    }
+        // Logout
+        function odhlasit() {
 
-    async function odoslatFormular() {
+            auth.signOut()
 
-        const meno =
-            document.getElementById("meno").value;
+                .then(() => {
 
-        const vek =
-            document.getElementById("vek").value;
+                    window.location.href =
+                        "index.html";
 
-        const mesto =
-            document.getElementById("mesto").value;
-
-        try {
-
-            await db.collection("formular").add({
-
-                meno: meno,
-
-                vek: vek,
-
-                mesto: mesto,
-
-                email: auth.currentUser.email,
-
-                cas: new Date()
-            });
-
-            alert("Údaje uložené");
-
-        } catch (err) {
-
-            alert(err.message);
+                });
         }
-}
 
-</script>
+        // Odoslanie formulára
+        async function odoslatFormular() {
+
+            const meno =
+                document.getElementById("meno").value;
+
+            const vek =
+                document.getElementById("vek").value;
+
+            const mesto =
+                document.getElementById("mesto").value;
+
+            try {
+
+                // Uloženie do Firestore
+                await db.collection("formular").add({
+
+                    meno: meno,
+
+                    vek: vek,
+
+                    mesto: mesto,
+
+                    email: auth.currentUser.email,
+
+                    cas: new Date()
+                });
+
+                alert("Údaje uložené");
+
+                // Vyčistenie inputov
+                document.getElementById("meno").value = "";
+
+                document.getElementById("vek").value = "";
+
+                document.getElementById("mesto").value = "";
+
+            } catch (err) {
+
+                alert("Chyba: " + err.message);
+            }
+        }
+
+    </script>
+
 </body>
 </html>
