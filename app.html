@@ -21,26 +21,49 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
     <script>
     // Firebase config
     const firebaseConfig = {
 
         apiKey: "AIzaSyCVGGZN44AymLC3m0rSWvoYTQ1dL8hZd_A",
+
         authDomain: "web-app-3b87c.firebaseapp.com",
+
         projectId: "web-app-3b87c",
-        storageBucket: "web-app-3b87c.firebasestorage.app",
+
+        storageBucket: "web-app-3b87c.appspot.com",
+
         messagingSenderId: "9585236090",
+
         appId: "1:9585236090:web:7e61314446b7d52b3683c3",
+
         measurementId: "G-66T6L53E2Y"
     };
 
     // Init Firebase
     firebase.initializeApp(firebaseConfig);
 
-    // NAJPRV auth
+    // Auth
     const auth = firebase.auth();
 
-    // AŽ POTOM funkcia
+    // Kontrola používateľa
+    auth.onAuthStateChanged(user => {
+
+        if (user) {
+
+            // Zobrazenie emailu
+            document.getElementById("email")
+                .textContent = user.email;
+
+        } else {
+
+            // Ak nie je login
+            window.location.href = "index.html";
+        }
+    });
+
+    // Logout
     function odhlasit() {
 
         auth.signOut()
@@ -50,15 +73,6 @@
                 window.location.href = "index.html";
 
             });
-
-        auth.onAuthStateChanged(user => {
-
-    if (user) {
-
-        document.getElementById("email")
-            .textContent = user.email;
-        }
-    });
     }
 
 </script>
