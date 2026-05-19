@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Moja Firebase App</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        input { padding: 8px; width: 200px; }
+        button { padding: 8px 15px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Moja Firebase App</h1>
+    <input id="txt" placeholder="Napíš niečo">
+    <button onclick="uloz()">Ulož</button>
+    <ul id="zoznam"></ul>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVGGZN44AymLC3m0rSWvoYTQ1dL8hZd_A",
+            authDomain: "web-app-3b87c.firebaseapp.com",
+            projectId: "web-app-3b87c",
+            storageBucket: "web-app-3b87c.firebasestorage.app",
+            messagingSenderId: "9585236090",
+            appId: "1:9585236090:web:7e61314446b7d52b3683c3",
+            measurementId: "G-66T6L53E2Y"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        async function uloz() {
+            const text = document.getElementById("txt").value;
+            if (text) {
+                await db.collection("data").add({text: text});
+                document.getElementById("txt").value = "";
+                nacitaj();
+            }
+        }
+
+        async function nacitaj() {
+            const snapshot = await db.collection("data").getDocs();
+            document.getElementById("zoznam").innerHTML = "";
+            snapshot.forEach(doc => {
+                const li = document.createElement("li");
+                li.textContent = doc.data().text;
+                document.getElementById("zoznam").appendChild(li);
+            });
+        }
+
+        nacitaj();
+    </script>
+</body>
+</html>
