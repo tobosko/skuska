@@ -1,100 +1,198 @@
 <!DOCTYPE html>
-<html>
+<html lang="sk">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moja Firebase App</title>
+
     <style>
-        body { font-family: Arial; padding: 20px; }
-        input { padding: 8px; display: block; margin: 10px 0; width: 200px; }
-        button { padding: 8px 15px; cursor: pointer; margin: 5px 5px 5px 0; }
-        #login { display: block; }
-        #app { display: none; }
+        body {
+            font-family: Arial;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        input {
+            padding: 10px;
+            display: block;
+            margin: 10px 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+            margin: 5px 5px 5px 0;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        #app {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div id="login">
+
+    <!-- LOGIN -->
+    <div id="login" class="box">
         <h2>Prihlásenie</h2>
-        <input id="email" placeholder="Email">
+
+        <input id="email" type="email" placeholder="Email">
         <input id="password" type="password" placeholder="Heslo">
+
         <button onclick="prihlasit()">Prihlásiť</button>
         <button onclick="registrovat()">Registrovať</button>
     </div>
 
-    <div id="app">
+    <!-- APP -->
+    <div id="app" class="box">
         <h1>Moja Firebase App</h1>
+
         <button onclick="odhlasit()">Odhlásiť sa</button>
+
+        <hr>
+
         <input id="txt" placeholder="Napíš niečo">
+
         <button onclick="uloz()">Ulož</button>
+
         <ul id="zoznam"></ul>
     </div>
 
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
+        // Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyCVGGZN44AymLC3m0rSWvoYTQ1dL8hZd_A",
             authDomain: "web-app-3b87c.firebaseapp.com",
             projectId: "web-app-3b87c",
-            storageBucket: "web-app-3b87c.firebasestorage.app",
+            storageBucket: "web-app-3b87c.appspot.com",
             messagingSenderId: "9585236090",
             appId: "1:9585236090:web:7e61314446b7d52b3683c3",
             measurementId: "G-66T6L53E2Y"
         };
 
-        const app = firebase.initializeApp(firebaseConfig);
+        // Init Firebase
+        firebase.initializeApp(firebaseConfig);
+
         const auth = firebase.auth();
         const db = firebase.firestore();
 
+        // Kontrola loginu
         auth.onAuthStateChanged(user => {
+
             if (user) {
                 document.getElementById("login").style.display = "none";
                 document.getElementById("app").style.display = "block";
+
                 nacitaj();
+
             } else {
                 document.getElementById("login").style.display = "block";
                 document.getElementById("app").style.display = "none";
             }
         });
 
+        // Registrácia
         function registrovat() {
+
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
+
             auth.createUserWithEmailAndPassword(email, password)
-                .then(() => window.location.href = "app.html")
-                .catch(err => alert("Chyba: " + err.message));
+                .then(() => {
+                    alert("Registrácia úspešná");
+                })
+                .catch(err => {
+                    alert("Chyba: " + err.message);
+                });
         }
 
+        // Prihlásenie
         function prihlasit() {
+
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
+
             auth.signInWithEmailAndPassword(email, password)
-                .then(() => window.location.href = "app.html")
-                .catch(err => alert("Chyba: " + err.message));
+                .then(() => {
+                    alert("Prihlásenie úspešné");
+                })
+                .catch(err => {
+                    alert("Chyba: " + err.message);
+                });
         }
 
+        // Odhlásenie
         function odhlasit() {
             auth.signOut();
         }
 
+        // Uloženie textu
         async function uloz() {
+
             const text = document.getElementById("txt").value;
-            if (text) {
-                await db.collection("data").add({text: text});
+
+            if (!text) return;
+
+            try {
+
+                await db.collection("data").add({
+                    text: text,
+                    createdAt: new Date()
+                });
+
                 document.getElementById("txt").value = "";
+
                 nacitaj();
+
+            } catch (err) {
+
+                alert("Chyba pri ukladaní: " + err.message);
             }
         }
 
+        // Načítanie dát
         async function nacitaj() {
-            const snapshot = await db.collection("data").getDocs();
-            document.getElementById("zoznam").innerHTML = "";
-            snapshot.forEach(doc => {
-                const li = document.createElement("li");
-                li.textContent = doc.data().text;
-                document.getElementById("zoznam").appendChild(li);
-            });
+
+            try {
+
+                const snapshot = await db.collection("data").get();
+
+                document.getElementById("zoznam").innerHTML = "";
+
+                snapshot.forEach(doc => {
+
+                    const li = document.createElement("li");
+
+                    li.textContent = doc.data().text;
+
+                    document.getElementById("zoznam").appendChild(li);
+                });
+
+            } catch (err) {
+
+                alert("Chyba pri načítaní: " + err.message);
+            }
         }
     </script>
+
 </body>
 </html>
