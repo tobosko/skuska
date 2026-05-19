@@ -20,40 +20,40 @@
 
     <script>
 
-        // Firebase config
-        const firebaseConfig = {
+    // Firebase config
+    const firebaseConfig = {
 
-            apiKey: "TVOJ_API_KEY",
+        apiKey: "TVOJ_API_KEY",
 
-            authDomain: "TVOJ_PROJEKT.firebaseapp.com",
+        authDomain: "TVOJ_PROJEKT.firebaseapp.com",
 
-            projectId: "TVOJ_PROJEKT",
+        projectId: "TVOJ_PROJEKT",
 
-            storageBucket: "TVOJ_PROJEKT.appspot.com",
+        storageBucket: "TVOJ_PROJEKT.appspot.com",
 
-            messagingSenderId: "XXXX",
+        messagingSenderId: "XXXX",
 
-            appId: "XXXX"
-        };
+        appId: "XXXX"
+    };
 
-        // Init Firebase
-        firebase.initializeApp(firebaseConfig);
+    // Init Firebase
+    firebase.initializeApp(firebaseConfig);
 
-        const auth = firebase.auth();
+    // NAJPRV auth
+    const auth = firebase.auth();
 
-        // Logout funkcia
-        function odhlasit() {
+    // AŽ POTOM funkcia
+    function odhlasit() {
 
-            auth.signOut()
+        auth.signOut()
 
-                .then(() => {
+            .then(() => {
 
-                    window.location.href =
-                        "index.html";
+                window.location.href = "index.html";
 
-                });
-        }
+            });
+    }
 
-    </script>
+</script>
 </body>
 </html>
